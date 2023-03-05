@@ -11,3 +11,4 @@ This tool requires python3, as well as the following modules:
  + Testing has only been on Debian Buster
  + Requires organization
  + Barely functional
+ + See **Todo** and **Concept** under `issues` for further details
