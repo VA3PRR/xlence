@@ -13,24 +13,26 @@ This tool requires python3, as well as the following modules:
 ## Running the tool
 The following commands assume you are in the directory containing `main.py`
 
-**These steps must be completed before running the program for the first time**
+**These steps must be completed before running the program for the first time.**
 
-1 enter `python3 -m venv venv`
 
-2 enter `. venv/bin/activate`
+1. enter `python3 -m venv venv`
 
-3 enter `pip install` `flask` `bs4` `lxml`
+2. enter `. venv/bin/activate`
 
-4 enter `python3 main.py`
+3. enter `pip install` `flask` `bs4` `lxml`
 
-5 visit `http://localhost:5000` in your browser
+4. enter `python3 main.py`
 
-**After the first time, only the following steps are needed**
-1 enter `. venv/bin/activate`
+5. visit `http://localhost:5000` in your browser
 
-2 enter `python3 main.py`
+**After the first time, only the following steps are needed.**
 
-3 visit `http://localhost:5000` in your browser
+1. enter `. venv/bin/activate`
+
+2. enter `python3 main.py`
+
+3. visit `http://localhost:5000` in your browser
 
 Simplifying this process is a development goal.
 
