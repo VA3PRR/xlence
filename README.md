@@ -6,9 +6,9 @@ The tool is intended to provide a simple interface for creating, managing, and s
 ## Requires
 This tool requires python3, as well as the following modules:
  + venv
- ++ flask
- ++ bs4
- ++ lxml
+ + + flask
+ + + bs4
+ + + lxml
 
 ## Running the tool
 The following commands assume you are in the directory containing `main.py`
