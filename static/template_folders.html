@@ -1,0 +1,32 @@
+
+	<script language="javascript">
+		function loadTemplates(t)	{
+			document.getElementById("output").innerHTML = t;
+		}
+	</script>
+	<form method="POST" action="criteria_select">
+	<select name="template">
+	<option disabled>Select a template</option>
+<option value='USGS' onclick='loadTemplates(this.innerHTML);'>USGS</option>
+<option value='SHARES Forms' onclick='loadTemplates(this.innerHTML);'>SHARES Forms</option>
+<option value='TX STATE Forms' onclick='loadTemplates(this.innerHTML);'>TX STATE Forms</option>
+<option value='CANADIAN Forms' onclick='loadTemplates(this.innerHTML);'>CANADIAN Forms</option>
+<option value='GENERAL Forms' onclick='loadTemplates(this.innerHTML);'>GENERAL Forms</option>
+<option value='RADIOGRAM & RRI Forms' onclick='loadTemplates(this.innerHTML);'>RADIOGRAM & RRI Forms</option>
+<option value='WEATHER Forms' onclick='loadTemplates(this.innerHTML);'>WEATHER Forms</option>
+<option value='OR STATE Forms' onclick='loadTemplates(this.innerHTML);'>OR STATE Forms</option>
+<option value='HI STATE forms' onclick='loadTemplates(this.innerHTML);'>HI STATE forms</option>
+<option value='WA STATE Forms' onclick='loadTemplates(this.innerHTML);'>WA STATE Forms</option>
+<option value='ICS USA Forms' onclick='loadTemplates(this.innerHTML);'>ICS USA Forms</option>
+<option value='MAPPING-GIS FORMS' onclick='loadTemplates(this.innerHTML);'>MAPPING-GIS FORMS</option>
+<option value='FMRE Forms' onclick='loadTemplates(this.innerHTML);'>FMRE Forms</option>
+<option value='HICS Forms' onclick='loadTemplates(this.innerHTML);'>HICS Forms</option>
+<option value='CA STATE Forms' onclick='loadTemplates(this.innerHTML);'>CA STATE Forms</option>
+<option value='FEMA Forms' onclick='loadTemplates(this.innerHTML);'>FEMA Forms</option>
+<option value='IARU Forms' onclick='loadTemplates(this.innerHTML);'>IARU Forms</option>
+<option value='ARC Forms' onclick='loadTemplates(this.innerHTML);'>ARC Forms</option>
+<option value='GENERAL MEDICAL Forms' onclick='loadTemplates(this.innerHTML);'>GENERAL MEDICAL Forms</option>
+
+	</select>
+	</form>
+	<div id="output"></div>

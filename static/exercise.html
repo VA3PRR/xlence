@@ -1,0 +1,17 @@
+<div id="tool_navigation" style="display:compact;">
+<h4>Exercise Functions</h4>
+
+<button class="interface" value="exercise_edit" onclick="toolNavigate(this.value);">Edit Details</button>
+<br>
+<button class="interface" value="exercise_import" onclick="toolNavigate(this.value);">Import</button>
+<br>
+<button class="interface" value="exercise_export" onclick="toolNavigate(this.value);">Export to file</button>
+<br>
+</div>
+<div id="tool">
+<p>If this is your first time using XLenCe, you'll need to begin by 
+<a href="#" onclick="toolNavigate('exercise_new');">creating a new exercise</a>.
+<br>If you've already created and exported an exercise, 
+<a href="#" onclick="toolNavigate('exercise_import');">import it here</a>.</p>
+</div>
+<div id="tool_output"></div>
