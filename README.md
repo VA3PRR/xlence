@@ -5,9 +5,24 @@ The tool is intended to provide a simple interface for creating, managing, and s
 
 ## Requires
 This tool requires python3, as well as the following modules:
- + flask
- + bs4
- + lxml
+ + venv
+ + + flask
+ + + bs4
+ + + lxml
+
+## Running the tool
+The following commands assume you are in the directory containing `main.py`
+**These steps must be completed before running the program for the first time**
++ enter `python3 -m venv .`
++ enter `. venv/bin/activate`
++ enter `pip install` `flask` `bs4` `lxml`
++ enter `python3 main.py`
+
+**After the first time, only the following steps are needed**
++ enter `. venv/bin/activate`
++ enter `python3 main.py`
+
+Simplifying this process is a development goal.
 
 ## Notes
  + Testing has only been on Debian Buster
