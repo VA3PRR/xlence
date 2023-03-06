@@ -6,13 +6,15 @@ The tool is intended to provide a simple interface for creating, managing, and s
 ## Requires
 This tool requires python3, as well as the following modules:
  + venv
- + + flask
- + + bs4
- + + lxml
+ ++ flask
+ ++ bs4
+ ++ lxml
 
 ## Running the tool
 The following commands assume you are in the directory containing `main.py`
+
 **These steps must be completed before running the program for the first time**
+
 + enter `python3 -m venv .`
 + enter `. venv/bin/activate`
 + enter `pip install` `flask` `bs4` `lxml`
