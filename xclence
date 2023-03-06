@@ -1,0 +1,389 @@
+#!/usr/bin/env python3
+from flask import Flask
+from flask import request
+from flask import redirect, url_for, render_template
+from os import walk
+from bs4 import BeautifulSoup as bs
+import lxml
+import json
+
+#from static_html import *
+
+
+#	Globals
+
+app = Flask(__name__)
+
+exercise_data = {}
+criteria_data = {}
+score_data = {}
+digest = {}
+digest_data = None
+templates = {}
+templates_directory = "static/templates/"
+current_template = None
+#	Routes and route functions
+
+@app.route("/")
+def main_page():
+	return render_template("index.html")	
+
+@app.route("/import_digest/",methods=["GET","POST"])
+def import_digest():
+	if request.method == "GET":
+		return render_template("digest_import.html")
+	try:
+		global digest_data
+		data = request.files["digest"]
+		print(data)
+		data.save(data.filename)
+		fh = open(data.filename,"r")
+		imported_digest = fh.read()
+		fh.close()
+		digest_data = bs(imported_digest,"lxml")
+		parse_digest()
+	except:
+		return "Failed to upload file"
+	return redirect(url_for("view_digest"))
+
+@app.route("/exercise/")
+def exercise_details():
+	return exercise_data
+
+@app.route("/import_exercise/",methods=["GET","POST"])
+def import_exercise():
+	try:
+		global exercise_data
+		data = request.files["imported_exercise"]
+		data.save(data.filename)
+		fh = open(data.filename,"r")
+		imported_exercise = fh.read()
+		fh.close()
+		exercise_data = json.loads(imported_exercise)
+	except:
+		return "Failed to upload file"
+	return redirect(url_for("exercise_details"))
+
+@app.route("/edit_exercise/",methods=["GET","POST"])
+def edit_exercise():
+	if request.method == "GET":
+		html_string = """
+			<form method="POST" action="/edit_exercise/">
+	<table>
+		<tr>
+			<th>Exercise Name:</th>
+			<td>
+				<input value="{NAME}" type="text" name="exercise_name" onchange="toolOutput(this.name+' updated');">
+			</td>
+		</tr>
+		<tr>
+			<th>Release Date:</th>
+			<td>
+				<input value="{RELEASE}" type="date" name="exercise_release_date" onchange="toolOutput(this.name+' updated');">
+			</td>
+		</tr>
+		<tr>
+			<th>Due Date:</th>
+			<td>
+				<input value="{DUE}" type="date" name="exercise_due_date" onchange="toolOutput(this.name+' updated');">
+			</td>
+		</tr>
+		<tr>
+			<th>Author:</th>
+			<td>
+				<input value="{AUTHOR}" type="text" name="exercise_author" onchange="toolOutput(this.name+' updated');">
+			</td>
+		</tr>
+		<tr>
+			<th>Summary:</th>
+			<td>
+				<textarea name="exercise_summary" onchange="toolOutput(this.name+' updated');">{SUMMARY}</textarea> 
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input type="reset" value="Clear Form" onfocus="toolOutput('Input cleared');">
+			</td>
+			<td>
+				<input type="submit" value="Submit" onchange="toolOutput('Submitting...');">
+			</td>
+		</tr>
+	</table>
+</form>
+		""".replace("{NAME}",exercise_data["name"]).replace("{RELEASE}",exercise_data["release"]).replace("{DUE}",exercise_data["due"]).replace("{AUTHOR}",exercise_data["author"]).replace("{SUMMARY}",exercise_data["summary"])
+	else:
+		form = request.form
+		exercise_data["name"] = form.get("exercise_name")
+		exercise_data["release"] = form.get("exercise_release_date")
+		exercise_data["due"] = form.get("exercise_due_date")
+		exercise_data["author"] = form.get("exercise_author")
+		exercise_data["summary"] = form.get("exercise_summary")
+		html_string = exercise_data
+	return html_string
+	
+@app.route("/select_template/",methods=["GET","POST"])
+def select_template():
+	if request.method == "GET":
+		html_string = """
+			<form method="POST" action="/select_template/">
+			<select name="template">
+			<option default disabled>Select a template</option>
+			
+		"""
+		parent = ""
+		for template in templates:
+			if  templates[template][0] != parent:
+				parent = templates[template][0]
+				pre_strg = "<option disabled>"+parent+" Templates</option>"
+			else:
+				pre_strg = ""
+			strg = "<option value='"+templates[template][1].name+"'>"+templates[template][1].name+"</option>"
+			html_string+=pre_strg+strg
+
+		html_string += """
+			</select>
+			<input type="submit">
+		</form>
+		"""
+	else:
+		template_name = request.form.get("template")
+		current_template = templates[template_name][1]
+		html_string = current_template.selectCriteria("/save_criteria/")
+	return html_string
+	
+@app.route("/save_criteria/",methods=["POST"])
+def save_criteria():
+	global criteria_data
+	criteria_data = request.form
+	return redirect(url_for("main_page"))
+	
+@app.route("/edit_template/")
+def edit_template():
+	global criteria_data
+	display = []
+	for field in criteria_data:
+		data = criteria_data[field]
+		if data != "ignore":
+			arr = [field,data]
+			display.append(arr)
+	return display
+
+@app.route("/view_digest/")
+def view_digest():
+	global digest
+	html_string = """
+	<link rel="stylesheet" href="/static/core.css">
+	<table>
+		<tr>
+			<th>Callsign</th>
+			<th>Date</th>
+			<th>Entry #</th>
+		</tr>
+	"""
+	for callsign in digest:
+		data = digest[callsign]
+		entries = 1
+		for entry in data:
+			strg = "<tr><td>"+callsign+"</td><td>"+entry["date"]+"</td><td>"+str(entries)+"</td></tr>"
+			entries+=1
+			html_string += strg
+	html_string += "</table>"
+	return html_string
+
+	
+#	Helper functions
+def parse_digest():
+	global digest
+	global digest_data
+	messages = digest_data.find_all("mime")
+	for message in messages:
+		message = message.text
+		if "=0A" in message:
+			#	WoAD replaces EOL character with = and LF with =0A
+			message = message.replace("=\n","").replace("=0A","\n")
+		message = message.split("\n")
+		message_date = message[0].replace("Date: ","").replace(" +0000","")
+		message_sender = find_callsign(message[1])
+		message_subject = message[2]
+		start_index = 0
+		end_index = 0
+		i = 0
+		for line in message:
+			if start_index == 0 and line.startswith("--boundary"):
+				start_index = i+3
+				continue
+			elif i > start_index and line.startswith("--boundary"):
+				end_index = i
+				break
+			i+=1
+		message_text = message[start_index:end_index:]
+		message_text = "\n".join([i for i in message_text if i])	#	remove empty keys and join
+		if message_sender not in digest:
+			digest[message_sender] = [
+					{
+						"date":		message_date,
+						"subject":	message_subject,
+						"message":	message_text,
+					}
+				]
+		else:
+			entrynum = len(digest[message_sender])+1
+			digest[message_sender].append(
+				{
+					"date":		message_date,
+					"subject":	message_subject,
+					"message":	message_text,
+				}
+			)
+
+def find_callsign(address):
+	address = address.replace("From: ","").replace("@winlink.org","").upper()
+	chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	extras = ""
+	for character in address[5:-1:-1]:
+		if character not in chars:
+			continue
+		extras += character
+	return address.replace(extras,"")
+
+
+#	Classes
+class Template:
+	def __init__(self, name, text_file):
+		self.name = name
+		self.text_file = text_file
+		self.location = "/".join(text_file.split("/")[:-1:])
+		self.text_data = self.getText()
+		self.form_file = self.location+"/"+self.getForms()
+		self.form_data = self.getFormData()
+		self.fields = self.getVars()
+		
+	def getForms(self):
+		fh = open(self.text_file,"rb")
+		form_name = fh.readlines(1)[0].decode()
+		fh.close()
+		form_name = form_name.replace(": ",":").replace("Form:","").replace("\r","").replace("\n","").split(",")[0]
+		return form_name
+		
+	def getFormData(self):
+		fh = open(self.form_file,"rb")
+		form_data = fh.read().decode()
+		fh.close()
+		self.html = bs(form_data)
+		self.inputs = self.html.find_all("input")
+		return form_data
+		
+	def getText(self):
+		fh = open(self.text_file,"rb")
+		text_data = fh.read().decode()
+		fh.close()
+		return text_data
+	
+	def getVars(self):
+		variables_used = []
+		for entry in self.inputs:
+			name = entry.get_attribute_list("name")[0] 
+			if type(name) != type(None):
+				if name in self.text_data:
+					variables_used.append(name)
+				
+		return variables_used
+	def prepareHTML(self):
+		thwart_strg = "{MsgSender}"
+		onsubmit_strg = "return confirm('To complete your form submission, click OK and close the open browser window. You will return to the new message window so you can post your message to the outbox');"
+		processor_strg = "http://{FormServer}:{FormPort}"
+		this_html = self.form_data.replace(thwart_strg,"").replace(onsubmit_strg,"").replace(processor_strg,"/save_criteria/")
+		return this_html
+	
+	def selectCriteria(self,action="/"):
+		html_string = """
+		<form method="POST" action=<ACTION>>
+		<table>
+		<tr>
+			<th>Variable</th>
+			<td></td>
+			<th>Ignore</th>
+			<th>Set?</th>
+			<th>Equal to?</th>
+			<th>Contains?</th>
+			<td></td>
+		</tr>
+		""".replace("<ACTION>",action)
+		for var in self.fields:
+			strg = """
+				<tr>
+					<th><VAR></th>
+					<td></td>
+					<td>
+						<input type="radio" name="<VAR>" value="ignore" checked="true">
+					</td>
+					<td>
+						<input type="radio" name="<VAR>" value="set">
+					</td>
+					<td>
+						<input type="radio" name="<VAR>" value="equals">
+					</td>
+					<td>
+						<input type="radio" name="<VAR>" value="contains">
+					</td>
+					<td>
+						<input type="text" name="<VAR>-comparison">
+					</td>
+				</tr>
+			""".replace("<VAR>",var)
+			html_string += strg
+		
+		html_string+="""
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><input type="reset"></td>
+				<td><input type="submit"></td>
+				<td></td>
+			</tr>
+			</table>
+		</form>
+		"""
+		return html_string
+def buildTemplates():		
+	#	Scan Templates Directory for text and html files
+	templates_directory = "static/templates/"
+	text_files = []
+	html_files = []
+	for root,dirs,files in walk(templates_directory):
+		for file in files:
+			ext = file.split(".")[-1].lower()
+			file_path = str(root+"/"+file)
+			if ext in ("htm","html"):
+				html_files.append(file_path)
+			elif ext == "txt":
+				text_files.append(file_path)
+
+	#	Build templates based on text files
+	
+	global templates
+	for txt in text_files:
+		if "Changelog.txt" not in txt and "Standard_Forms_Version.dat" not in txt:
+			name = txt.replace(".txt","").split("/")
+			root = name[-2]
+			name = name[-1]
+			try:
+				templates[name] = [root,Template(name,txt)]
+			except:
+				continue
+	return templates
+
+	
+#	Mainloop
+if __name__ == '__main__':
+	exercise_data = {
+		"name":		"testing",
+		"author":	"VA3PRR",
+		"release":	"2023-03-03",
+		"due":		"2023-03-05",
+		"summary":	"Test Exercise"
+	}
+	buildTemplates()
+	app.run()
