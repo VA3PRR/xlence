@@ -1,0 +1,43 @@
+<form method="POST" id="create_exercise">
+<table>
+	<tr>
+		<th>Exercise Name:</th>
+		<td>
+			<input value="{NAME}" type="text" name="exercise_name" onchange="exerciseOutput();">
+		</td>
+	</tr>
+	<tr>
+		<th>Release Date:</th>
+		<td>
+			<input value="{RELEASE}" type="date" name="exercise_release_date" onchange="exerciseOutput();">
+		</td>
+	</tr>
+	<tr>
+		<th>Due Date:</th>
+		<td>
+			<input value="{DUE}" type="date" name="exercise_due_date" onchange="exerciseOutput();">
+			Due?<input value="{HASDUE}" type="checkbox" name="exercise_has_due_date" onchange="exerciseOutput();">
+		</td>			
+	</tr>
+	<tr>
+		<th>Author:</th>
+		<td>
+			<input value="{AUTHOR}" type="text" name="exercise_author" onchange="exerciseOutput();">
+		</td>
+	</tr>
+	<tr>
+		<th>Summary:</th>
+		<td>
+			<textarea name="exercise_summary" onchange="exerciseOutput();">{SUMMARY}</textarea> 
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<input type="button" value="Clear Form" onclick="document.getElementById('create_exercise').reset()">
+		</td>
+		<td>
+			<input type="button" value="Submit" onclick="submitExercise();">
+		</td>
+	</tr>
+</table>
+</form>

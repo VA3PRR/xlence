@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<title>XLenCe</title>
+		<link rel="stylesheet" href="static/core.css">
+		<script language="javascript" src="static/core.js">
+		
+		</script>
+	</head>
+	<body onload="bootSequence();">
+		<div id="header"><h2>XLenCe Winlink Training Exercise Scoring Tool</div>
+		<div id="global_navigation">
+			<input type="button" id="button_exercise" value="Exercise" onclick="doNavigate('/static/'+this.value.toLowerCase()+'.html','content','GET');">
+			<input type="button" id="button_criteria" value="Criteria" onclick="doNavigate('/static/'+this.value.toLowerCase()+'.html','content','GET');">
+			<input type="button" id="button_digest" value="Digest" onclick="doNavigate('/static/'+this.value.toLowerCase()+'.html','content','GET');">
+			<input type="button" id="button_scores" value="Score" onclick="doNavigate('/static/'+this.value.toLowerCase()+'.html','content','GET');">
+			<input type="button" id="button_help" value="Help" onclick="doNavigate('/static/'+this.value.toLowerCase()+'.html','content','GET');">
+		</div>
+		<div id="content">
+		<p>
+			Welcome to the XLenCe tool.<br>Click on 
+			<a href="#" onclick="doNavigate('/static/exercise.html','content','GET');">Exercise</a> to begin.
+		</p
+		</div>
+		<div id="footer"></div>
+	</body>
+</html>
