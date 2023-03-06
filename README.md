@@ -35,5 +35,5 @@ Simplifying this process is a development goal.
  + Currently packaged with standard form templates, but no mechanism exists to update them
  + + standard templates add hundreds of files to the project, many are likely unnecessary
  + Most templates *appear* to work, but most haven't been tested
- + See `Concept` and `Todo` **issues** for further details
+ + See #Concept and #Todo for further details
  
