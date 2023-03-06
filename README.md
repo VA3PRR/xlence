@@ -15,7 +15,7 @@ The following commands assume you are in the directory containing `main.py`
 
 **These steps must be completed before running the program for the first time**
 
-+ enter `python3 -m venv .`
++ enter `python3 -m venv venv`
 + enter `. venv/bin/activate`
 + enter `pip install` `flask` `bs4` `lxml`
 + enter `python3 main.py`
@@ -35,5 +35,5 @@ Simplifying this process is a development goal.
  + Currently packaged with standard form templates, but no mechanism exists to update them
  + + standard templates add hundreds of files to the project, many are likely unnecessary
  + Most templates *appear* to work, but most haven't been tested
- + See **Todo** and **Concept** under `issues` for further details
+ + See `Concept` and `Todo` **issues** for further details
  
