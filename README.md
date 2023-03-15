@@ -1,4 +1,9 @@
 # XLenCe
+
+# ***IMPORTANT***
+Major changes incoming, see Issue #3: General Notes/Changelog for details.
+
+
 A browser-based scoring tool for training exercises using the Winlink email application.
 The tool is intended to provide a simple interface for creating, managing, and scoring training exercises.
 ### Designed for WinlinkTraining.ca by VA3PRR
