@@ -1,7 +1,7 @@
 # XLenCe
 
 # ***IMPORTANT***
-Major changes incoming, see Issue #3: General Notes/Changelog for details.
+Major changes incoming, see Issue #3: General Notes/Changelog for details. The `scuba` branch will hold the results of these changes until known to work, at which point it will replace the `main` branch.
 
 
 A browser-based scoring tool for training exercises using the Winlink email application.
